@@ -1,0 +1,87 @@
+#######################################################################
+# /etc/elasticsearch/elasticsearch.yml
+#
+# Base configuration for Sonda's Performance Cluster
+#######################################################################
+
+#######################################################################
+#Cluster configuration
+#######################################################################
+
+  cluster.name: performance
+
+  # Minimum nodes alive to constitute an operational cluster
+  discovery.zen.minimum_master_nodes: 4
+
+  # Wait for this number of nodes before attempting to restart the cluster
+  gateway_expected_nodes: 6
+
+  #Ping times to avoid loosing nodes
+  discovery.zen.fd.ping_interval: 15s
+  discovery.zen.fd.ping_timeout: 60s
+  discovery.zen.fd.ping_retries: 5
+
+
+  # Unicast Discovery (disable multicast)
+  discovery.zen.ping.multicast.enabled: false
+  discovery.zen.ping.unicast.enabled: true
+  discovery.zen.ping.unicast.hosts: [ "192.168.100.34", "192.168.100.35",
+   "192.168.100.48","192.168.100.21","192.168.100.22","192.168.100.45",
+   "192.168.100.47","192.168.100.44" ]
+
+
+
+#######################################################################
+#Node Configuration
+#######################################################################
+
+  node.data: true
+  node.master: true
+  node.name: "Node01"
+
+
+####################
+# Force all memory to be locked, forcing the JVM to never swap
+####################
+
+  bootstrap.mlockall: true
+
+####################
+# Threadpool Settings
+####################
+
+  # Search pool
+  threadpool.search.type: fixed
+  threadpool.search.size: 20
+  threadpool.search.queue_size: 100
+
+  # Bulk pool
+  threadpool.bulk.type: fixed
+  threadpool.bulk.size: 60
+  threadpool.bulk.queue_size: 300
+
+  # Index pool
+  threadpool.index.type: fixed
+  threadpool.index.size: 20
+  threadpool.index.queue_size: 100
+
+  # Indices settings
+  indices.memory.index_buffer_size: 30%
+  indices.memory.min_shard_index_buffer_size: 12mb
+  indices.memory.min_index_buffer_size: 96mb
+
+  # Cache Sizes
+  indices.fielddata.cache.size: 15%
+  indices.fielddata.cache.expire: 6h
+  indices.cache.filter.size: 15%
+  indices.cache.filter.expire: 6h
+
+  # Indexing Settings for Writes
+  index.refresh_interval: 30s
+  index.translog.flush_threshold_ops: 50000
+
+####################
+# Enable Cors for Kibana
+####################
+  http.cors.enabled: true
+  http.cors.allow-origin: "*"
